@@ -55,7 +55,7 @@ const paginate = (schema) => {
             coordinates: [+lng, +lat],
           },
           distanceField: 'distance',
-          maxDistance: +distance ? +distance * unitValue : Infinity, // distance in meters
+          maxDistance: +distance >= 0 ? +distance * unitValue : Infinity,
           spherical: true,
         },
       });
