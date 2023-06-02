@@ -22,14 +22,16 @@ const paginate = (schema) => {
   schema.statics.paginate = async function (filter, options) {
     const { lng, lat, distance, ...newFilter } = filter;
     const pipeline = [];
-    let sort = '';
+    let sort = {};
     if (options.sortBy) {
       const sortingCriteria = [];
       options.sortBy.split(',').forEach((sortOption) => {
         const [key, order] = sortOption.split(':');
         sortingCriteria.push({ [key]: order === 'desc' ? -1 : 1 });
       });
-      sort = sortingCriteria;
+      sort = sortingCriteria.reduce((mergedObj, obj) => {
+        return { ...mergedObj, ...obj };
+      }, {});
     } else {
       sort = { createdAt: 1 };
     }
