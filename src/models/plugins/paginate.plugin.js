@@ -42,6 +42,8 @@ const paginate = (schema) => {
 
     if (newFilter.name) {
       newFilter.name = { $regex: newFilter.name, $options: 'i' };
+    } else {
+      delete newFilter.name;
     }
 
     if (newFilter.facilityTags) {
@@ -49,7 +51,6 @@ const paginate = (schema) => {
     }
 
     if (lat && lng && distance) {
-      const unitValue = 1000;
       pipeline.unshift({
         $geoNear: {
           near: {
@@ -57,7 +58,7 @@ const paginate = (schema) => {
             coordinates: [+lng, +lat],
           },
           distanceField: 'distance',
-          maxDistance: +distance >= 0 ? +distance * unitValue : Infinity,
+          maxDistance: +distance >= 0 ? +distance : Infinity,
           spherical: true,
         },
       });
