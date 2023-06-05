@@ -8,10 +8,13 @@ const gymSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
-    image: {
-      type: String,
+    images: {
+      type: [String],
       default:
         'https://png.pngtree.com/png-vector/20220617/ourlarge/pngtree-default-placeholder-fitness-trainer-in-a-t-shirt-png-image_5121003.png',
+    },
+    video: {
+      type: String,
     },
     address: {
       type: String,
