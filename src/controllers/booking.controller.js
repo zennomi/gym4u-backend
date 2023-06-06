@@ -26,7 +26,7 @@ const getBooking = catchAsync(async (req, res) => {
   
   const updateBooking = catchAsync(async (req, res) => {
     const booking = await bookingService.updateBookingById(req.params.bookingId, req.body);
-    res.send(gym);
+    res.send(booking);
   });
   
   const deleteBooking = catchAsync(async (req, res) => {
