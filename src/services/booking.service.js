@@ -3,7 +3,7 @@ const { Booking, Gym } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const createBooking = async (data) => {
-    const gym = await getGymById(gymId);
+    const gym = await getGymById(data.gymId);
     if (!gym) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Gym not found');
     }

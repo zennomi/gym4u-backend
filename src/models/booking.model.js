@@ -10,11 +10,13 @@ const bookingSchema = mongoose.Schema(
         },
         email: {
             type: String,
+            required: true,
+            trim: true,
             validate(value) {
-                if(!value.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-                    throw new Error('Invalid Email')
+                if (!validator.isEmail(value)) {
+                  throw new Error('Invalid email');
                 }
-            }
+              },
         },
         phone: {
             type: String,
@@ -26,22 +28,22 @@ const bookingSchema = mongoose.Schema(
               }
             },
           },
-        roomID: {
-            type: String,
+          gym: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Gym',
             required: true,
-            trim: true
-        },
+          },
         price: {
             type: Number,
             required: true,
         },
         from: {
-            type: String,
+            type: Date,
             required: true,
             trim: true,
         },
         to: {
-            type: String,
+            type: Date,
             required: true,
             trim: true,
         }
@@ -53,8 +55,8 @@ const bookingSchema = mongoose.Schema(
 );
 
 // add plugin that converts mongoose to json
-userSchema.plugin(toJSON);
-userSchema.plugin(paginate);
+bookingSchema.plugin(toJSON);
+bookingSchema.plugin(paginate);
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

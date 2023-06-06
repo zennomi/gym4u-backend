@@ -3,23 +3,18 @@ const { toJSON, paginate } = require('./plugins');
 
 const feedbackSchema = mongoose.Schema(
     {
-        user_id: {
-            type: String,
+        user: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'User',
             required: true,
-            trim: true
-        },
-        gym_id: {
-            type: String,
+          },
+        gym: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Gym',
             required: true,
-            trim: true
-        },
+          },
         content: {
             type: String,
-            required: true,
-            trim: true
-        },
-        start: {
-            type: Number,
         }
 
     },
@@ -29,8 +24,8 @@ const feedbackSchema = mongoose.Schema(
 );
 
 // add plugin that converts mongoose to json
-userSchema.plugin(toJSON);
-userSchema.plugin(paginate);
+feedbackSchema.plugin(toJSON);
+feedbackSchema.plugin(paginate);
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 
