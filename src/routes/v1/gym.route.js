@@ -1,11 +1,23 @@
 const express = require('express');
+const auth = require('../../middlewares/auth');
 const gymController = require('../../controllers/gym.controller');
 
 const router = express.Router();
 
-router.route('/').post(gymController.createGym).get(gymController.getGyms);
+router.route('/').post(auth('manager'), gymController.createGym).get(gymController.getGyms);
 
-router.route('/:gymId').get(gymController.getGym).patch(gymController.updateGym).delete(gymController.deleteGym);
+router
+  .route('/:gymId')
+  .get(gymController.getGym)
+  .patch(auth('manager'), gymController.updateGym)
+  .delete(auth('manager'), gymController.deleteGym);
+
+router
+  .route('/:gymId/image')
+  .post(auth('manager'), gymController.uploadImage)
+  .delete(auth('manager'), gymController.deleteImage);
+
+router.route('/:gymId/video').delete(auth('manager'), gymController.deleteVideo);
 
 module.exports = router;
 

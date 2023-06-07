@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
-const { toJSON, paginate } = require('./plugins');
+const { toJSON, paginateLocation } = require('./plugins');
 
 const gymSchema = mongoose.Schema(
   {
+    user: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -65,7 +70,7 @@ gymSchema.index({ location: '2dsphere' });
 
 // add plugin that converts mongoose to json
 gymSchema.plugin(toJSON);
-gymSchema.plugin(paginate);
+gymSchema.plugin(paginateLocation);
 
 /**
  * Check if phone is taken

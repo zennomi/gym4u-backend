@@ -3,8 +3,8 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const gymRoute = require('./gym.route');
-const bookingRoute = require('./booking.route')
-const feedbackRoute = require('./feedback.route')
+const bookingRoute = require('./booking.route');
+const feedbackRoute = require('./feedback.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -29,7 +29,7 @@ const defaultRoutes = [
   {
     path: '/feedback',
     route: feedbackRoute,
-  }
+  },
 ];
 
 const devRoutes = [

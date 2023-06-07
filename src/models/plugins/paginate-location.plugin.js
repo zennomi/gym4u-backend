@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-
 const paginate = (schema) => {
   /**
    * @typedef {Object} QueryResult
@@ -20,43 +19,84 @@ const paginate = (schema) => {
    * @returns {Promise<QueryResult>}
    */
   schema.statics.paginate = async function (filter, options) {
-    let sort = '';
+    const { lng, lat, distance, ...newFilter } = filter;
+    const pipeline = [];
+    let sort = {};
     if (options.sortBy) {
       const sortingCriteria = [];
       options.sortBy.split(',').forEach((sortOption) => {
         const [key, order] = sortOption.split(':');
-        sortingCriteria.push((order === 'desc' ? '-' : '') + key);
+        sortingCriteria.push({ [key]: order === 'desc' ? -1 : 1 });
       });
-      sort = sortingCriteria.join(' ');
+      sort = sortingCriteria.reduce((mergedObj, obj) => {
+        return { ...mergedObj, ...obj };
+      }, {});
     } else {
-      sort = 'createdAt';
+      sort = { createdAt: 1 };
     }
 
     const limit = options.limit && parseInt(options.limit, 10) > 0 ? parseInt(options.limit, 10) : 10;
     const page = options.page && parseInt(options.page, 10) > 0 ? parseInt(options.page, 10) : 1;
     const skip = (page - 1) * limit;
 
-    const countPromise = this.countDocuments(filter).exec();
-    let docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit);
+    if (newFilter.name) {
+      newFilter.name = { $regex: newFilter.name, $options: 'i' };
+    } else {
+      delete newFilter.name;
+    }
+
+    if (newFilter.facilityTags) {
+      newFilter.facilityTags = { $in: newFilter.facilityTags };
+    }
+
+    if (lat && lng && distance) {
+      pipeline.unshift({
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [+lng, +lat],
+          },
+          distanceField: 'distance',
+          maxDistance: +distance >= 0 ? +distance : Infinity,
+          spherical: true,
+        },
+      });
+    }
+
+    pipeline.push({ $match: newFilter });
+    pipeline.push({ $count: 'totalResults' });
+
+    const countPromise = await this.aggregate(pipeline).exec();
+
+    pipeline.pop();
+
+    pipeline.push({ $sort: sort });
+    pipeline.push({ $skip: skip });
+    pipeline.push({ $limit: limit });
+
+    let docsPromise = this.aggregate(pipeline);
 
     if (options.populate) {
       options.populate.split(',').forEach((populateOption) => {
-        docsPromise = docsPromise.populate(
-          populateOption
-            .split('.')
-            .reverse()
-            .reduce((a, b) => ({ path: b, populate: a }))
-        );
+        docsPromise = docsPromise
+          .lookup({
+            from: `${populateOption}s`,
+            localField: populateOption,
+            foreignField: '_id',
+            as: populateOption,
+          })
+          .unwind(populateOption);
       });
     }
 
     docsPromise = docsPromise.exec();
 
     return Promise.all([countPromise, docsPromise]).then((values) => {
-      const [totalResults, results] = values;
+      const [countResult, docsResult] = values;
+      const totalResults = countResult.length > 0 ? countResult[0].totalResults : 0;
       const totalPages = Math.ceil(totalResults / limit);
       const result = {
-        results,
+        results: docsResult,
         page,
         limit,
         totalPages,
