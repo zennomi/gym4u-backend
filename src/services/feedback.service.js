@@ -1,48 +1,81 @@
 const httpStatus = require('http-status');
-const { Gym, Feedback } = require('../models');
+const { Feedback } = require('../models');
+const { getGymById } = require('./gym.service');
+const { getUserById } = require('./user.service');
 const ApiError = require('../utils/ApiError');
 
+/**
+ * Create a feedback
+ * @param {Object} feedbackBody
+ * @returns {Promise<Feedback>}
+ */
 const createFeedback = async (data) => {
-    const gym = await getGymById(data.gymId);
-    if (!gym) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Gym not found');
-    }
-    return Feedback.create(data)
-}
+  const gym = await getGymById(data.gymId);
+  const user = await getUserById(data.userId);
+  if (!gym || !user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Gym or User not found');
+  }
+  return Feedback.create(data);
+};
 
+/**
+ * Query for feedback
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {number} [options.limit] - Maximum number of results per page (default = 10)
+ * @param {number} [options.page] - Current page (default = 1)
+ * @returns {Promise<QueryResult>}
+ */
 const queryFeedbacks = async (filter, options) => {
-    return await Feedback.paginate(filter, options)
-}
+  const feedback = await Feedback.paginate(filter, options);
+  return feedback;
+};
 
+/**
+ * Get feedback by id
+ * @param {ObjectId} id
+ * @returns {Promise<Feedback>}
+ */
 const getFeedBack = async (id) => {
-    return Feedback.findById(id)
-}
+  return Feedback.findById(id);
+};
 
+/**
+ * Update feedback by id
+ * @param {ObjectId} feedbackId
+ * @param {Object} updateBody
+ * @returns {Promise<Gym>}
+ */
 const updateFeedback = async (feedbackId, data) => {
-    const feedback = await getFeedBack(feedbackId);
-    if (!feedback) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Feedback not found');
-    }
+  const feedback = await getFeedBack(feedbackId);
+  if (!feedback) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Feedback not found');
+  }
 
-    Object.assign(feedback, data);
-    await Feedback.save();
-    return feedback;
-}
+  Object.assign(feedback, data);
+  await Feedback.save();
+  return feedback;
+};
 
-const deleteFeedback = async(feedbackId) => {
-    const feedback = await getFeedBack(feedbackId);
-    if (!feedback) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found');
-    }
-
-    await feedback.remove()
-    return feedback
-}
+/**
+ * Delete feedback by id
+ * @param {ObjectId} feedbackId
+ * @returns {Promise<Feedback>}
+ */
+const deleteFeedback = async (feedbackId) => {
+  const feedback = await getFeedBack(feedbackId);
+  if (!feedback) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Feedback not found');
+  }
+  await feedback.remove();
+  return feedback;
+};
 
 module.exports = {
-    createFeedback,
-    queryFeedbacks,
-    getFeedBack,
-    updateFeedback,
-    deleteFeedback
-}
+  createFeedback,
+  queryFeedbacks,
+  getFeedBack,
+  updateFeedback,
+  deleteFeedback,
+};
