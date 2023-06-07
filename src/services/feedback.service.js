@@ -1,7 +1,6 @@
 const httpStatus = require('http-status');
 const { Feedback } = require('../models');
 const { getGymById } = require('./gym.service');
-const { getUserById } = require('./user.service');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -9,13 +8,12 @@ const ApiError = require('../utils/ApiError');
  * @param {Object} feedbackBody
  * @returns {Promise<Feedback>}
  */
-const createFeedback = async (data) => {
-  const gym = await getGymById(data.gymId);
-  const user = await getUserById(data.userId);
-  if (!gym || !user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Gym or User not found');
+const createFeedback = async (userId, data) => {
+  const gym = await getGymById(data.gym);
+  if (!gym) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Gym not found');
   }
-  return Feedback.create(data);
+  return Feedback.create({ ...data, user: userId });
 };
 
 /**

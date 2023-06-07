@@ -5,6 +5,10 @@ const router = express.Router();
 
 router.route('/').post(bookingController.createBooking).get(bookingController.getBookings);
 
-router.route('/:bookingId').get(bookingController.getBooking).patch(bookingController.updateBooking).delete(bookingController.deleteBooking);
+router
+  .route('/:bookingId')
+  .get(bookingController.getBooking)
+  .patch(bookingController.updateBooking)
+  .delete(bookingController.deleteBooking);
 
 module.exports = router;
