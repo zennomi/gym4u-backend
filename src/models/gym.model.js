@@ -1,17 +1,25 @@
 const mongoose = require('mongoose');
-const { toJSON, paginate } = require('./plugins');
+const { toJSON, paginateLocation } = require('./plugins');
 
 const gymSchema = mongoose.Schema(
   {
+    user: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     name: {
       type: String,
       required: true,
       trim: true,
     },
-    image: {
-      type: String,
+    images: {
+      type: [String],
       default:
         'https://png.pngtree.com/png-vector/20220617/ourlarge/pngtree-default-placeholder-fitness-trainer-in-a-t-shirt-png-image_5121003.png',
+    },
+    video: {
+      type: String,
     },
     address: {
       type: String,
@@ -44,6 +52,14 @@ const gymSchema = mongoose.Schema(
       type: [String],
       required: true,
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    feedbackCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
@@ -54,7 +70,7 @@ gymSchema.index({ location: '2dsphere' });
 
 // add plugin that converts mongoose to json
 gymSchema.plugin(toJSON);
-gymSchema.plugin(paginate);
+gymSchema.plugin(paginateLocation);
 
 /**
  * Check if phone is taken

@@ -37,12 +37,12 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const gymSeeder = async () => {
   const gyms = [];
   const numberOfGyms = 20;
-  const tags = ['Massage', 'Yoga', 'Boxing', 'Pool', 'Zumba', 'Pilates', 'Crossfit'];
+  const tags = ['マッサージ', 'ヨガ', 'ボクシング', 'プール', 'ズンバ', 'ピラティス', 'クロスフィット'];
   try {
     await Gym.create(gyms);
     for (let i = 0; i < numberOfGyms; i += 1) {
-      const latitude = parseFloat(faker.address.latitude(9.17682, 22.82333));
-      const longitude = parseFloat(faker.address.longitude(103.02301, 109.32094));
+      const latitude = parseFloat(faker.address.latitude(21.00023, 21.82333));
+      const longitude = parseFloat(faker.address.longitude(105.02301, 105.9867));
       // eslint-disable-next-line no-await-in-loop
       const address = await getAddressFromLngLat(longitude, latitude);
       // eslint-disable-next-line no-await-in-loop

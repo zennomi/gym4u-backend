@@ -28,21 +28,35 @@ const userSchema = mongoose.Schema(
       required: true,
       trim: true,
       minlength: 8,
-      validate(value) {
-        if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-          throw new Error('Password must contain at least one letter and one number');
-        }
-      },
       private: true, // used by the toJSON plugin
+    },
+    avatar: {
+      type: String,
+      default: 'https://t3.ftcdn.net/jpg/04/43/94/64/360_F_443946496_oS2DyLfj5a067Dqnj6OazMFtMasjh40K.jpg',
     },
     role: {
       type: String,
       enum: roles,
       default: 'user',
     },
-    isEmailVerified: {
-      type: Boolean,
-      default: false,
+    address: {
+      type: String,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      unique: true,
+      required: true,
+      validate(value) {
+        if (!value.match(/^\d+$/)) {
+          throw new Error('Invalid phone number');
+        }
+      },
+    },
+    sex: {
+      type: String,
+      enum: ['男性', '女性', '他'],
+      required: true,
     },
   },
   {
@@ -62,6 +76,17 @@ userSchema.plugin(paginate);
  */
 userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
+  return !!user;
+};
+
+/**
+ * Check if phone is taken
+ * @param {string} phone - The user's phone
+ * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
+ * @returns {Promise<boolean>}
+ */
+userSchema.statics.isPhoneTaken = async function (phone, excludeUserId) {
+  const user = await this.findOne({ phone, _id: { $ne: excludeUserId } });
   return !!user;
 };
 

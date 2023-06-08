@@ -7,11 +7,11 @@ const ApiError = require('../utils/ApiError');
  * @param {Object} gymBody
  * @returns {Promise<Gym>}
  */
-const createGym = async (gymBody) => {
+const createGym = async (userId, gymBody) => {
   if (await Gym.isPhoneTaken(gymBody.phone)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Phone already taken');
   }
-  return Gym.create(gymBody);
+  return Gym.create({ ...gymBody, user: userId });
 };
 
 /**
@@ -70,10 +70,49 @@ const deleteGymById = async (gymId) => {
   return gym;
 };
 
+const uploadImageGym = async (gymId, image) => {
+  const gym = await getGymById(gymId);
+  if (!gym) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Gym not found');
+  }
+  gym.images.push(image);
+  await gym.save();
+  return gym;
+};
+
+const deleteImageGym = async (gymId, image) => {
+  const gym = await getGymById(gymId);
+  if (!gym) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Gym not found');
+  }
+  if (gym.images.length <= 1) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Gym must have at least one image');
+  }
+  gym.images.pull(image);
+  await gym.save();
+  return gym;
+};
+
+const deleteVideoGym = async (gymId) => {
+  const gym = await getGymById(gymId);
+  if (!gym) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Gym not found');
+  }
+  if (!gym.video) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Gym must have a video');
+  }
+  gym.video = undefined;
+  await gym.save();
+  return gym;
+};
+
 module.exports = {
   createGym,
   queryGyms,
   getGymById,
   updateGymById,
   deleteGymById,
+  uploadImageGym,
+  deleteImageGym,
+  deleteVideoGym,
 };
