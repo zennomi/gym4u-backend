@@ -52,7 +52,7 @@ const updateFeedback = async (feedbackId, data) => {
   }
 
   Object.assign(feedback, data);
-  await Feedback.save();
+  await feedback.save();
   return feedback;
 };
 

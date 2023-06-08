@@ -2,6 +2,7 @@ const axios = require('axios');
 // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
 const faker = require('faker');
 const { Gym } = require('../models');
+const { User } = require('../models');
 
 const getAddressFromLngLat = async (lng, lat) => {
   const options = {
@@ -32,22 +33,30 @@ const getRandomArray = (arr) => {
   return randomElement;
 };
 
+const getRandomAndRemove = (array) => {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  const randomElement = array[randomIndex];
+  array.splice(randomIndex, 1);
+  return randomElement;
+};
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const gymSeeder = async () => {
+  const users = await User.find({ role: 'manager' }, { _id: 1 });
   const gyms = [];
-  const numberOfGyms = 20;
-  const tags = ['マッサージ', 'ヨガ', 'ボクシング', 'プール', 'ズンバ', 'ピラティス', 'クロスフィット'];
+  const numberOfGyms = users.length;
+  const tags = ['マッサージ', 'プール', 'ピラティス'];
   try {
-    await Gym.create(gyms);
     for (let i = 0; i < numberOfGyms; i += 1) {
-      const latitude = parseFloat(faker.address.latitude(21.00023, 21.82333));
-      const longitude = parseFloat(faker.address.longitude(105.02301, 105.9867));
+      const latitude = parseFloat(faker.address.latitude(21.0013862, 21.0016036));
+      const longitude = parseFloat(faker.address.longitude(105.8408742, 105.8420578));
       // eslint-disable-next-line no-await-in-loop
       const address = await getAddressFromLngLat(longitude, latitude);
       // eslint-disable-next-line no-await-in-loop
       await delay(1000);
       const gym = {
+        user: getRandomAndRemove(users),
         name: `${faker.company.companyName(1).split(' - ')[0]} Gym`,
         address,
         location: {
@@ -61,7 +70,7 @@ const gymSeeder = async () => {
       };
       if (gym.address !== undefined) gyms.push(gym);
     }
-    await Gym.create(gyms);
+    await Gym.insertMany(gyms);
     console.log('Gym seed data created successfully');
   } catch (err) {
     console.error('Error creating gym seed data:', err);
