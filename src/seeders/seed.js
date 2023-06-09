@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const userSeeder = require('./UserSeeder');
 const gymSeeder = require('./GymSeeder');
 const feedbackSeeder = require('./FeedbackSeeder');
 
-mongoose.connect('mongodb://localhost:27017/gym4u', {
+dotenv.config();
+
+mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
