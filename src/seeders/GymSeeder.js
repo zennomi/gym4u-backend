@@ -33,6 +33,11 @@ const getRandomArray = (arr) => {
   return randomElement;
 };
 
+const getRandomElement = (array) => {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+};
+
 const getRandomAndRemove = (array) => {
   const randomIndex = Math.floor(Math.random() * array.length);
   const randomElement = array[randomIndex];
@@ -42,11 +47,38 @@ const getRandomAndRemove = (array) => {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const tags = ['マッサージ', 'プール', 'ピラティス'];
+const images = [
+  'https://img.freepik.com/free-photo/woman-doing-squats-smith-machine_7502-9063.jpg?w=900&t=st=1686389456~exp=1686390056~hmac=3cf0308086cc38b63a657f11e5152e1c109839fe780e49f6f400981d3107d4e5',
+  'https://img.freepik.com/free-photo/man-weightlifter-doing-leg-presses-with-his-trainer-sports-couple-is-working-out-gym_613910-2600.jpg?w=740&t=st=1686390243~exp=1686390843~hmac=844a3258b716ec586345a0eb9d8b855c4d021a73c7e3b74d79229df42c743bdf',
+  'https://img.freepik.com/premium-photo/beautiful-asian-woman-play-fitness-gymthailand-girl-has-slim-bodytime-exercisepeople-love-heathstretching-body-before-workoutsport-woman-warm-up-bodypush-up-with-dumbell_44277-16810.jpg?w=900',
+  'https://img.freepik.com/free-photo/young-pretty-woman-working-out-gym-doing-bicep-curls-with-help-her-personal-trainer_496169-2688.jpg?w=900&t=st=1686390741~exp=1686391341~hmac=f1a853cf9a4b8c63287db8479e0fb25f7be1e3e8456227bf8e39221b8f20b8c9',
+  'https://img.freepik.com/premium-photo/handsome-young-muscle-man-working-with-dumbbell-with-trainer_74324-106.jpg?w=826',
+  'https://img.freepik.com/free-photo/beautiful-sporty-muscular-woman-working-out-with-two-dumbbells_231208-3319.jpg?w=900&t=st=1686389822~exp=1686390422~hmac=e36e2ed2b484a46b599a5a0eb457cb7c2570a01bb1bd7e0447386264e4d3a970',
+  'https://img.freepik.com/premium-photo/young-woman-doing-exercise-with-dumbbell-modern-gym_35150-2873.jpg?w=900',
+  'https://img.freepik.com/free-photo/brunette-woman-doing-battle-rope-training_7502-4793.jpg?w=900&t=st=1686389533~exp=1686390133~hmac=60c9dfe973c41328e74c4b1e650a14017ed7f78dfa768a2f46a494e625e4b208',
+  'https://img.freepik.com/free-photo/portrait-young-healthy-woman-running-treadmill-she-smile-during-workout-gym-healthy-lifestyle-concept-copy-space-vertical-image_1150-46963.jpg?w=900&t=st=1686389539~exp=1686390139~hmac=026911defdcf17e846e0703b7000dfb4beacce81a2bddfbcd284d1bf895537ae',
+  'https://img.freepik.com/free-photo/female-bodybuilder-training-with-dumbbells_7502-4794.jpg?w=900&t=st=1686389544~exp=1686390144~hmac=e2a1438f744f1e2d6bf7417e88756819aaace34375cc5a1275369e7e4e6a7445',
+  'https://img.freepik.com/premium-photo/muscular-coach-doing-seated-bicep-curl_317809-8445.jpg?w=900',
+  'https://img.freepik.com/free-photo/young-sexy-woman-wearing-sportswear-sweat-proof-fabric-smartwatch-walking-treadmill-warm-up-before-run-workout-modern-gym-copy-space_1150-46973.jpg?w=900&t=st=1686389598~exp=1686390198~hmac=b561f14dd1847ca8e4363cdc5b459b1b6ebf7d5b545ade4bdeba8ca5d6e133ec',
+];
+const videos = [
+  'https://www.youtube.com/watch?v=PCZ2JHaPvZ4',
+  'https://www.youtube.com/watch?v=k_LZ9lJ4mcs',
+  'https://www.youtube.com/watch?v=YmFW-RRMsnY',
+  'https://www.youtube.com/watch?v=FWmqQNQ9tWE',
+  'https://www.youtube.com/watch?v=ZjEjlPmac8I',
+  'https://www.youtube.com/watch?v=7PkN9Jqmxc0',
+  'https://www.youtube.com/watch?v=MAnqh3wuYJE',
+  'https://www.youtube.com/watch?v=l1Pdv1TNcOA',
+  'https://www.youtube.com/watch?v=SwLURNzCtvA',
+  'https://www.youtube.com/watch?v=c-qTks5Zk3s',
+];
+
 const gymSeeder = async () => {
   const users = await User.find({ role: 'manager' }, { _id: 1 });
   const gyms = [];
   const numberOfGyms = users.length;
-  const tags = ['マッサージ', 'プール', 'ピラティス'];
   try {
     for (let i = 0; i < numberOfGyms; i += 1) {
       const latitude = parseFloat(faker.address.latitude(21.0013862, 21.0016036));
@@ -58,6 +90,7 @@ const gymSeeder = async () => {
       const gym = {
         user: getRandomAndRemove(users),
         name: `${faker.company.companyName(1).split(' - ')[0]} Gym`,
+        images: getRandomArray(images),
         address,
         location: {
           type: 'Point',
@@ -67,6 +100,7 @@ const gymSeeder = async () => {
         price: faker.commerce.price(10000, 50000, 0),
         description: faker.lorem.sentences(3),
         facilityTags: getRandomArray(tags),
+        video: getRandomElement(videos),
       };
       if (gym.address !== undefined) gyms.push(gym);
     }
