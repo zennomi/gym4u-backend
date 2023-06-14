@@ -36,7 +36,7 @@ const queryFeedbacks = async (filter, options) => {
  * @returns {Promise<Feedback>}
  */
 const getFeedBack = async (id) => {
-  return Feedback.findById(id);
+  return Feedback.findById(id).populate('user');
 };
 
 /**
@@ -45,10 +45,14 @@ const getFeedBack = async (id) => {
  * @param {Object} updateBody
  * @returns {Promise<Gym>}
  */
-const updateFeedback = async (feedbackId, data) => {
+const updateFeedback = async (feedbackId, user, data) => {
   const feedback = await getFeedBack(feedbackId);
   if (!feedback) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Feedback not found');
+  }
+
+  if (feedback.user._id.toString() !== user._id.toString() && user.role !== 'admin') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
   }
 
   Object.assign(feedback, data);
@@ -61,11 +65,16 @@ const updateFeedback = async (feedbackId, data) => {
  * @param {ObjectId} feedbackId
  * @returns {Promise<Feedback>}
  */
-const deleteFeedback = async (feedbackId) => {
+const deleteFeedback = async (feedbackId, user) => {
   const feedback = await getFeedBack(feedbackId);
   if (!feedback) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Feedback not found');
   }
+
+  if (feedback.user._id.toString() !== user._id.toString() && user.role !== 'admin') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
+  }
+
   await feedback.remove();
   return feedback;
 };

@@ -25,12 +25,12 @@ const getFeedback = catchAsync(async (req, res) => {
 });
 
 const updateFeedback = catchAsync(async (req, res) => {
-  const feedback = await feedbackService.updateFeedback(req.params.bookingId, req.body);
+  const feedback = await feedbackService.updateFeedback(req.params.feedbackId, req.user, req.body);
   res.send(feedback);
 });
 
 const deleteFeedback = catchAsync(async (req, res) => {
-  await feedbackService.deleteFeedback(req.params.gymId);
+  await feedbackService.deleteFeedback(req.params.feedbackId, req.user);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
