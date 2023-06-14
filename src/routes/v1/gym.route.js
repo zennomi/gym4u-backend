@@ -4,20 +4,17 @@ const gymController = require('../../controllers/gym.controller');
 
 const router = express.Router();
 
-router.route('/').post(auth('manager'), gymController.createGym).get(gymController.getGyms);
+router.route('/').post(auth('user'), gymController.createGym).get(gymController.getGyms);
 
 router
   .route('/:gymId')
   .get(gymController.getGym)
-  .patch(auth('manager'), gymController.updateGym)
-  .delete(auth('manager'), gymController.deleteGym);
+  .patch(auth('user'), gymController.updateGym)
+  .delete(auth('user'), gymController.deleteGym);
 
-router
-  .route('/:gymId/image')
-  .post(auth('manager'), gymController.uploadImage)
-  .delete(auth('manager'), gymController.deleteImage);
+router.route('/:gymId/image').post(auth('user'), gymController.uploadImage).delete(auth('user'), gymController.deleteImage);
 
-router.route('/:gymId/video').delete(auth('manager'), gymController.deleteVideo);
+router.route('/:gymId/video').delete(auth('user'), gymController.deleteVideo);
 
 module.exports = router;
 
