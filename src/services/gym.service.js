@@ -34,7 +34,7 @@ const queryGyms = async (filter, options) => {
  * @returns {Promise<Gym>}
  */
 const getGymById = async (id) => {
-  return Gym.findById(id);
+  return Gym.findById(id).populate('user');
 };
 
 /**

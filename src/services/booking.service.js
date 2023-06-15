@@ -9,7 +9,7 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<Booking>}
  */
 const createBooking = async (data) => {
-  const gym = await getGymById(data.gymId);
+  const gym = await getGymById(data.gym);
   if (!gym) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Gym not found');
   }
@@ -52,7 +52,7 @@ const updateBookingById = async (bookingId, data) => {
   }
 
   Object.assign(booking, data);
-  await Booking.save();
+  await booking.save();
   return booking;
 };
 

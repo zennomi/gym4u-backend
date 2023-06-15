@@ -1,9 +1,10 @@
 const express = require('express');
 const bookingController = require('../../controllers/booking.controller');
+const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
-router.route('/').post(bookingController.createBooking).get(bookingController.getBookingsByGymId);
+router.route('/').post(bookingController.createBooking).get(auth('user'), bookingController.getBookingsByGymId);
 
 router
   .route('/:bookingId')

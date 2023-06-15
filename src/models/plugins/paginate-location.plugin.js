@@ -76,18 +76,14 @@ const paginate = (schema) => {
 
     let docsPromise = this.aggregate(pipeline);
 
-    if (options.populate) {
-      options.populate.split(',').forEach((populateOption) => {
-        docsPromise = docsPromise
-          .lookup({
-            from: `${populateOption}s`,
-            localField: populateOption,
-            foreignField: '_id',
-            as: populateOption,
-          })
-          .unwind(populateOption);
-      });
-    }
+    docsPromise = docsPromise
+      .lookup({
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
+      })
+      .unwind('user');
 
     docsPromise = docsPromise.exec();
 
