@@ -36,7 +36,7 @@ const queryBookings = async (filter, options) => {
  * @returns {Promise<Booking>}
  */
 const getBookingById = async (id) => {
-  return Booking.findById(id);
+  return Booking.findById(id).populate('gym');
 };
 
 /**

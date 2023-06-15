@@ -58,9 +58,6 @@ const bookingSchema = mongoose.Schema(
 bookingSchema.plugin(toJSON);
 bookingSchema.plugin(paginate);
 
-bookingSchema.index({ user: 1, gym: 1 }, { unique: true });
-
 const Booking = mongoose.model('Booking', bookingSchema);
-Booking.createIndexes();
 
 module.exports = Booking;

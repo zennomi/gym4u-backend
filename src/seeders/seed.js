@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const userSeeder = require('./UserSeeder');
 const gymSeeder = require('./GymSeeder');
 const feedbackSeeder = require('./FeedbackSeeder');
+const bookingSeeder = require('./BookingSeeder');
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ async function seedAndExit() {
     await userSeeder();
     await gymSeeder();
     await feedbackSeeder();
+    await bookingSeeder();
 
     console.log('Data seeding completed.');
 

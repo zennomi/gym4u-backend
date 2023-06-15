@@ -9,7 +9,7 @@ const createBooking = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(booking);
 });
 
-const getBookings = catchAsync(async (req, res) => {
+const getBookingsByGymId = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['gym']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bookingService.queryBookings(filter, options);
@@ -36,7 +36,7 @@ const deleteBooking = catchAsync(async (req, res) => {
 
 module.exports = {
   createBooking,
-  getBookings,
+  getBookingsByGymId,
   getBooking,
   updateBooking,
   deleteBooking,

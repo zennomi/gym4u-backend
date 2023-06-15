@@ -14,7 +14,7 @@ router
 router
   .route('/:userId')
   .get(auth('user'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('admin'), validate(userValidation.updateUser), userController.updateUser)
+  .patch(auth('user'), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('admin'), validate(userValidation.deleteUser), userController.deleteUser);
 
 module.exports = router;
