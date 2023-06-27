@@ -9,22 +9,19 @@ const getRandomElement = (array) => {
 
 const userSeeder = async () => {
   const users = [];
-  const numberOfAdmin = 2;
   const numberOfManager = 18;
   const numberOfUser = 25;
   const sex = ['男性', '女性', '他'];
   try {
-    for (let i = 0; i < numberOfAdmin; i += 1) {
-      const user = {
-        role: 'admin',
-        email: faker.internet.email(),
-        phone: faker.phone.phoneNumber('0##########'),
-        sex: getRandomElement(sex),
-        name: faker.name.findName(),
-        password: '12345678',
-      };
-      users.push(user);
-    }
+    const admin = {
+      role: 'admin',
+      email: 'bruh@gym4u.vn',
+      phone: '0123456789',
+      sex: '男性',
+      name: 'Bruh',
+      password: '12345678',
+    };
+    users.push(admin);
     for (let i = 0; i < numberOfManager; i += 1) {
       const user = {
         role: 'manager',

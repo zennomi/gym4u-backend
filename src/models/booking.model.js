@@ -48,6 +48,12 @@ const bookingSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    status: {
+      type: String,
+      enum: ['未解決', '却下', '受理'],
+      required: true,
+      default: '未解決',
+    },
   },
   {
     timestamps: true,

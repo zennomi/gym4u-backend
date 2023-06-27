@@ -10,7 +10,7 @@ const createBooking = catchAsync(async (req, res) => {
 });
 
 const getBookingsByGymId = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['gym']);
+  const filter = pick(req.query, ['gym', 'status']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bookingService.queryBookings(filter, options);
   res.send(result);
