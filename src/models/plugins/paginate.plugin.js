@@ -21,9 +21,8 @@ const paginate = (schema) => {
    */
   schema.statics.paginate = async function (filter, options) {
     let sort = '';
-    options.populate = 'user';
     if (filter.gym) {
-      options.populate = 'gym';
+      options.populate = 'user, gym';
     }
     if (options.sortBy) {
       const sortingCriteria = [];

@@ -33,6 +33,11 @@ const getRandomArray = (arr) => {
   return randomElement;
 };
 
+const getRandomElements = (array, count) => {
+  const shuffled = array.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
+
 const getRandomElement = (array) => {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
@@ -74,6 +79,19 @@ const videos = [
   'https://www.youtube.com/watch?v=SwLURNzCtvA',
   'https://www.youtube.com/watch?v=c-qTks5Zk3s',
 ];
+const imagesPool = [
+  'https://1.bp.blogspot.com/-2Hf5dHC11wM/Xd5l7or8vRI/AAAAAAAAM_Q/WCEgrSfKF10gqSAYJgqQRpVNaHiET2_7ACLcBGAsYHQ/s1600/hayvnnet-loat-sao-nu-phim-nguoi-lon-so-huu-body-hoan-hao-thieu-dot-anh-nhin-p-2%2B%252812%2529.jpg',
+  'https://scanlover.com/assets/images/17406-4KbAH5tKQHdqfBT8.jpeg',
+  'https://res.cloudinary.com/wintersonata/image/upload/c_pad,b_auto:predominant,fl_preserve_transparency/v1688226293/352228838_565686822391013_366255031585716886_n_k6o16s.jpg?_s=public-apps',
+  'https://img.freepik.com/premium-photo/sexy-mature-woman-bikini-walking-pool-view-from_746318-38.jpg?w=900',
+  'https://img.freepik.com/premium-photo/sexy-young-woman-swimming-pool_363766-271.jpg?w=2000',
+  'https://img.freepik.com/premium-photo/young-beautiful-woman-splashing-water-swimming-pool_35076-567.jpg?w=900',
+  'https://img.freepik.com/premium-photo/two-young-women-friends-enjoy-swimming-pool_35076-2244.jpg?w=900',
+  'https://img.freepik.com/premium-photo/couple-pool_52137-4702.jpg?w=900',
+  'https://img.freepik.com/premium-photo/sexy-woman-in-bikini-swimming-in-the-pool-top-view_46370-4271.jpg?w=900',
+  'https://img.freepik.com/premium-photo/woman-posing-by-the-pool-summer-vacation-sexy-woman-in-swimwear-bikini-relaxing-in-swimming-pool-spa_265223-83113.jpg?w=900',
+  'https://e0.pxfuel.com/wallpapers/216/524/desktop-wallpaper-marie-kai-marie-sexy-japanese-model-asian-japan-hot-cute-beautiful-woman-kawaii-idol-kai-lovely-female.jpg',
+];
 
 const gymSeeder = async () => {
   const users = await User.find({ role: 'manager' }, { _id: 1 });
@@ -105,6 +123,13 @@ const gymSeeder = async () => {
       if (gym.address !== undefined) gyms.push(gym);
     }
     await Gym.insertMany(gyms);
+    const gymsPool = await Gym.find({ facilityTags: { $in: ['プール'] } }, { _id: 1 });
+    for (let i = 0; i < gymsPool.length; i += 1) {
+      const imagePool = getRandomElements(imagesPool, 3);
+      // eslint-disable-next-line no-await-in-loop
+      await Gym.updateOne({ _id: gymsPool[i]._id }, { $push: { images: { $each: imagePool } } });
+    }
+
     console.log('Gym seed data created successfully');
   } catch (err) {
     console.error('Error creating gym seed data:', err);
