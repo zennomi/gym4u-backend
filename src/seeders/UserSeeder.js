@@ -1,13 +1,17 @@
 // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
 const faker = require('faker');
 const { User } = require('../models');
+const bcrypt = require('bcryptjs');
 
 const getRandomElement = (array) => {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 };
 
+
 const userSeeder = async () => {
+  const defaultPassword = await bcrypt.hash("12345678", 8);
+
   const users = [];
   const numberOfManager = 18;
   const numberOfUser = 25;
@@ -19,7 +23,7 @@ const userSeeder = async () => {
       phone: '0123456789',
       sex: '男性',
       name: 'Bruh',
-      password: '12345678',
+      password: defaultPassword,
     };
     users.push(admin);
     for (let i = 0; i < numberOfManager; i += 1) {
@@ -29,7 +33,7 @@ const userSeeder = async () => {
         phone: faker.phone.phoneNumber('0##########'),
         sex: getRandomElement(sex),
         name: faker.name.findName(),
-        password: '12345678',
+        password: defaultPassword,
       };
       users.push(user);
     }
@@ -40,7 +44,7 @@ const userSeeder = async () => {
         phone: faker.phone.phoneNumber('0##########'),
         sex: getRandomElement(sex),
         name: faker.name.findName(),
-        password: '12345678',
+        password: defaultPassword,
       };
       users.push(user);
     }
