@@ -21,7 +21,6 @@ const bookingSchema = mongoose.Schema(
     },
     phone: {
       type: String,
-      unique: true,
       required: true,
       validate(value) {
         if (!value.match(/^\d+$/)) {
