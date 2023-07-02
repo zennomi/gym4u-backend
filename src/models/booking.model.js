@@ -34,10 +34,6 @@ const bookingSchema = mongoose.Schema(
       ref: 'Gym',
       required: true,
     },
-    price: {
-      type: Number,
-      required: true,
-    },
     from: {
       type: Date,
       required: true,

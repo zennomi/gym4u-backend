@@ -33,7 +33,6 @@ const bookingSeeder = async () => {
           gym: gym._id,
           email: faker.internet.email(),
           phone: faker.phone.phoneNumber('0##########'),
-          price: gym.price,
           from: startTime,
           to: endTime,
         };
