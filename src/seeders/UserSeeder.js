@@ -8,6 +8,9 @@ const getRandomElement = (array) => {
   return array[randomIndex];
 };
 
+const getRandomAvatar = (str) => {
+  return `https://api-prod-minimal-v510.vercel.app/assets/images/avatar/avatar_${str.split('').map(i => i.charCodeAt(0)).reduce((a, b) => a + b, 0) % 25 + 1}.jpg`
+}
 
 const userSeeder = async () => {
   const defaultPassword = await bcrypt.hash("12345678", 8);
@@ -24,6 +27,7 @@ const userSeeder = async () => {
       sex: '男性',
       name: 'Bruh',
       password: defaultPassword,
+      avatar: getRandomAvatar(faker.name.findName()),
     };
     users.push(admin);
     for (let i = 0; i < numberOfManager; i += 1) {
@@ -34,6 +38,7 @@ const userSeeder = async () => {
         sex: getRandomElement(sex),
         name: faker.name.findName(),
         password: defaultPassword,
+        avatar: getRandomAvatar(faker.name.findName()),
       };
       users.push(user);
     }
@@ -45,6 +50,7 @@ const userSeeder = async () => {
         sex: getRandomElement(sex),
         name: faker.name.findName(),
         password: defaultPassword,
+        avatar: getRandomAvatar(faker.name.findName()),
       };
       users.push(user);
     }
