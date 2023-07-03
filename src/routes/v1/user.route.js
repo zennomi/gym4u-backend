@@ -1,10 +1,13 @@
 const express = require('express');
+const multer = require('multer');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const userValidation = require('../../validations/user.validation');
 const userController = require('../../controllers/user.controller');
 
 const router = express.Router();
+
+const upload = multer({ dest: 'uploads/' })
 
 router
   .route('/')
@@ -14,7 +17,7 @@ router
 router
   .route('/:userId')
   .get(auth('user'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('user'), validate(userValidation.updateUser), userController.updateUser)
+  .patch(auth('user'), upload.single('avatar'), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('admin'), validate(userValidation.deleteUser), userController.deleteUser);
 
 module.exports = router;

@@ -1,8 +1,11 @@
+const fs = require('fs');
 const httpStatus = require('http-status');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
+const axios = require('axios');
+const FormData = require('form-data')
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -25,6 +28,18 @@ const getUser = catchAsync(async (req, res) => {
 });
 
 const updateUser = catchAsync(async (req, res) => {
+  const file = req.file
+  if (file) {
+    let fd = new FormData()
+    fd.append('file', fs.createReadStream(file.path), { filename: file.originalname, contentType: file.mimetype, knownLength: file.size })
+    const { data } = await axios({
+      method: 'POST',
+      url: 'https://telegraph-image-bak.pages.dev/upload',
+      data: fd,
+      headers: fd.getHeaders(),
+    })
+    req.body.avatar = `https://telegraph-image-bak.pages.dev${data[0].src}`
+  }
   const user = await userService.updateUserById(req.params.userId, req.body);
   res.send(user);
 });
