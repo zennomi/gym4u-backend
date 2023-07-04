@@ -32,16 +32,14 @@ const updateUser = {
   params: Joi.object().keys({
     userId: Joi.required().custom(objectId),
   }),
-  body: Joi.object()
-    .keys({
-      email: Joi.string().email(),
-      password: Joi.string().custom(password),
-      name: Joi.string(),
-      sex: Joi.string(),
-      phone: Joi.string(),
-      avatar: Joi.any(),
-    })
-    .min(1),
+  body: Joi.object().keys({
+    email: Joi.string().email(),
+    password: Joi.string().custom(password),
+    name: Joi.string(),
+    sex: Joi.string(),
+    phone: Joi.string(),
+    avatar: Joi.any(),
+  }),
 };
 
 const deleteUser = {
