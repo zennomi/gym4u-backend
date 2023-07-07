@@ -46,7 +46,7 @@ const paginate = (schema) => {
     }
 
     if (newFilter.facilityTags) {
-      newFilter.facilityTags = { $in: newFilter.facilityTags };
+      newFilter.facilityTags = { $all: newFilter.facilityTags };
     }
 
     if (lat && lng && distance) {
